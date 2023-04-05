@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 import Decimal from 'decimal.js'
+import {convert} from './dpdsolver'
 
 
 function App() {
@@ -11,11 +12,14 @@ function App() {
   const [binary, setBinary] = useState("");
 
   function handleBinaryConvert(){
-    const result = new Decimal(418);
-    const bin = twosComplement(result.toBinary().replace('0b', ''));
-    console.log(bin);
-    console.log(signExtend(bin, 10));
-    setBinary(signExtend(bin, 10));
+    const string = "431";
+    setBinary(convert(string));
+
+    // const result = new Decimal(418);
+    // const bin = twosComplement(result.toBinary().replace('0b', ''));
+    // console.log(bin);
+    // console.log(signExtend(bin, 10));
+    // setBinary(signExtend(bin, 10));
   }
 
   // create a function that sign extends a binary string
@@ -69,7 +73,7 @@ function App() {
         </button>
 
         <button onClick={handleBinaryConvert}>
-          dpb is {binary}
+          dpd is {binary}
         </button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
