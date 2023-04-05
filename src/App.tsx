@@ -3,8 +3,18 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+import Decimal from 'decimal.js'
+
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+  const [binary, setBinary] = useState("");
+
+  function handleBinaryConvert(){
+    const result = new Decimal(-5);
+    console.log(result.toBinary().replace('0b', ''));
+    setBinary(result.toBinary().replace('0b', ''));
+  }
 
   return (
     <div className="App">
@@ -20,6 +30,10 @@ function App() {
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
+        </button>
+
+        <button onClick={handleBinaryConvert}>
+          dpb is {binary}
         </button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
