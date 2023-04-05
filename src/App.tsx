@@ -11,9 +11,45 @@ function App() {
   const [binary, setBinary] = useState("");
 
   function handleBinaryConvert(){
-    const result = new Decimal(-5);
-    console.log(result.toBinary().replace('0b', ''));
-    setBinary(result.toBinary().replace('0b', ''));
+    const result = new Decimal(418);
+    const bin = twosComplement(result.toBinary().replace('0b', ''));
+    console.log(bin);
+    console.log(signExtend(bin, 10));
+    setBinary(signExtend(bin, 10));
+  }
+
+  // create a function that sign extends a binary string
+  function signExtend(binary : string, length : number) : string{
+    const bit = binary[0] === '1' ? '1' : '0';
+    for (let i = binary.length; i < length; i++) {
+      binary = bit + binary;
+    }
+    return binary;
+  }
+
+  // create a function that returns two's complement of a binary string
+  function twosComplement(binary : string) : string{
+    var found = false;
+    if(binary[0] === '-'){
+      binary = binary.substring(1);
+      for (let i = binary.length; i >= 0; i--) {
+        if (binary[i] == '1' && !found) {
+          found = true;
+          continue;
+        }
+        if(found){
+          if (binary[i] == '1') {
+            binary = binary.substring(0, i) + '0' + binary.substring(i + 1);
+          } else {
+            binary = binary.substring(0, i) + '1' + binary.substring(i + 1);
+          }
+        }
+      }
+      binary = '1' + binary;
+    }
+    else binary = '0' + binary;
+    return binary;
+    
   }
 
   return (
