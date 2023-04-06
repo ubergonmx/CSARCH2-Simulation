@@ -1,8 +1,5 @@
 import { useState } from 'react'
 import './App.css'
-
-import Decimal from 'decimal.js'
-import {convert} from './dpdsolver'
 import Header from './Header';
 import Footer from './Footer';
 import {getcombination, getexponent} from './exponent'
