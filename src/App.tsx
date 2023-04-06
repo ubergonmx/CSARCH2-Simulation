@@ -19,10 +19,9 @@ function App(): JSX.Element {
     // console.log(convert(inputDecimal));
     // setBinary(convert(inputDecimal));
   }
-
   // create a function that sign extends a binary string
-  function signExtend(binary: string, length: number): string {
-    // eslint-disable-line
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function signExtend(binary: string, length: number): string { 
     const bit = binary[0] === "1" ? "1" : "0";
     for (let i = binary.length; i < length; i++) {
       binary = bit + binary;
@@ -31,8 +30,8 @@ function App(): JSX.Element {
   }
 
   // create a function that returns two's complement of a binary string
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function twosComplement(binary: string): string {
-    // eslint-disable-line
     let found = false;
     if (binary[0] === "-") {
       binary = binary.substring(1);
