@@ -5,6 +5,7 @@ import './App.css'
 
 import Decimal from 'decimal.js'
 import {convert} from './dpdsolver'
+import {getcombination, getexponent} from './exponent'
 
 
 function App() {
@@ -12,9 +13,15 @@ function App() {
   const [binary, setBinary] = useState("");
 
   function handleBinaryConvert(){
-    console.log(inputDecimal);
-    console.log(convert(inputDecimal));
-    setBinary(convert(inputDecimal));
+    var msd = "7";
+    var combifield = getcombination(msd, inputDecimal);
+    console.log(combifield);
+    var exponentfield = getexponent(inputDecimal);
+    console.log(exponentfield);
+    setBinary(combifield + "  " + exponentfield);
+    // console.log(inputDecimal);
+    // console.log(convert(inputDecimal));
+    // setBinary(convert(inputDecimal));  
   }
 
   // create a function that sign extends a binary string
