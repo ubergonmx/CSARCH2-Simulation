@@ -4,7 +4,7 @@
 
 :root {
   @apply leading-normal font-normal text-[rgba(255,255,255,0.87)] bg-[#242424];
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  @apply font-sans;
   color-scheme: light dark;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,9 +15,6 @@
 a {
   @apply font-medium text-[#646cff] hover:text-[#535bf2];
   text-decoration: inherit;
-}
-body {
-  @apply flex place-items-center min-w-[320px] min-h-screen m-0;
 }
 h1 {
   @apply text-[3.2em] leading-[1.1];
