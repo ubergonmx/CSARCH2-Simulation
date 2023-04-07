@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import Header from "./Header";
 import Footer from "./Footer";
-import { getcombination, getexponent } from "./exponent";
+import { getCombination, getExponent } from "./exponent";
 
 function App(): JSX.Element {
   const [inputDecimal, setInputDecimal] = useState("");
@@ -10,9 +10,9 @@ function App(): JSX.Element {
 
   function handleBinaryConvert(): void {
     const msd = "7";
-    const combifield = getcombination(msd, inputDecimal);
+    const combifield = getCombination(msd, inputDecimal);
     console.log(combifield);
-    const exponentfield = getexponent(inputDecimal);
+    const exponentfield = getExponent(inputDecimal);
     console.log(exponentfield);
     setBinary(combifield + "  " + exponentfield);
     // console.log(inputDecimal);
