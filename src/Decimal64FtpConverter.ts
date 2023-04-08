@@ -1,6 +1,7 @@
 import Decimal from "decimal.js";
+import { convert } from "./DPDSolver";
 
-// gets exponent field from given exponent
+// gets exponent continuation from given exponent
 export function getExponent(exponent: string): string {
   const solvedExponent = solveExponent(exponent);
   const exponentField = solvedExponent.substring(2);
@@ -11,7 +12,6 @@ export function getExponent(exponent: string): string {
 export function getCombination(msd: string, exponent: string): string {
   let combinationField = "";
   const solvedExponent = solveExponent(exponent); // solved exponent is the exponent added to 398 and is in 10 bit format
-  console.log(solvedExponent);
   const tempDec = new Decimal(msd);
   let msdBinary = tempDec.toBinary().replace("0b", "");
   if (msdBinary.length < 3) {
@@ -29,6 +29,26 @@ export function getCombination(msd: string, exponent: string): string {
     combinationField += msdBinary[msdBinary.length - 1]; // get lsb of msd
   }
   return combinationField;
+}
+
+// gets coefficient continuation from remaining digits
+export function getCoefficient(remainingDigits: string): string {
+  let coefficientField = "";
+  // omit msd
+  remainingDigits = remainingDigits.substring(1);
+  // starting from the lsd of the remaining digits, get the dpd of 3 digits and add it to the coefficient field
+  for (let i = remainingDigits.length - 1; i >= 0; i -= 3) {
+    const threeDigitNum = remainingDigits[i - 2] + remainingDigits[i - 1] + remainingDigits[i];
+    console.log(threeDigitNum);
+    coefficientField = convert(threeDigitNum) + coefficientField;
+  }
+  return coefficientField;
+}
+
+// gets the hexadecimal representation of the given binary string
+export function getHex(binary: string): string {
+  console.log(binary);
+  return new Decimal(binary).toHexadecimal().replace("0x", "");
 }
 
 function solveExponent(exponent: string): string {
