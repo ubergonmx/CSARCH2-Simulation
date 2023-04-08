@@ -12,9 +12,13 @@ function App(): JSX.Element {
 
   function handleBinaryConvert(): void {
     const sign = inputDecimal[0] === "-" ? "1" : "0";
-    const inputClean = inputDecimal.replace("-", "").length < 16 ? signExtend(inputDecimal, 16) : inputDecimal.replace("-", "");
-    const combinationField = getCombination(inputClean[0], inputExponent);
-    const exponentContinuation = getExponent(inputExponent);
+    const exponentOffset = normalizeInput(inputDecimal);
+    const newExponent = (parseInt(inputExponent) - exponentOffset).toString();
+    console.log("old exponent is " + inputExponent + " new exponent is " + newExponent);
+    let inputClean = inputDecimal.replace(".","");
+    inputClean = inputClean.replace("-", "").length < 16 ? signExtend(inputClean, 16) : inputClean.replace("-", "");
+    const combinationField = getCombination(inputClean[0], newExponent);
+    const exponentContinuation = getExponent(newExponent);
     const coefficientContinuation = getCoefficient(inputClean);
     const binaryString = `${sign}${combinationField}${exponentContinuation}${coefficientContinuation}`;
     setBinary(`${sign} ${combinationField} ${exponentContinuation} ${coefficientContinuation}`);
@@ -23,11 +27,10 @@ function App(): JSX.Element {
 
   // create a function that sign extends a decimal string
   function signExtend(decimal: string, length: number): string {
-    const digit = decimal[0] === "-" ? "1" : "0";
     // remove the sign
     decimal = decimal.replace("-", "");
     for (let i = decimal.length; i < length; i++) {
-      decimal = digit + decimal;
+      decimal = "0" + decimal;
     }
     return decimal;
   }
@@ -64,6 +67,12 @@ function App(): JSX.Element {
       binary = "1" + binary;
     } else binary = "0" + binary;
     return binary;
+  }
+
+  function normalizeInput(inputDecimal: string): number{
+    let offset = inputDecimal.indexOf(".");
+    offset = offset !== -1 ? inputDecimal.length - offset - 1 : 0
+    return offset;
   }
 
   return (
