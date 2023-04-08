@@ -12,7 +12,7 @@ function App(): JSX.Element {
 
   function handleBinaryConvert(): void {
     const sign = inputDecimal[0] === "-" ? "1" : "0";
-    const exponentOffset = getExponentOffset(inputDecimal);
+    const exponentOffset = getExponentOffset(parseFloat(inputDecimal).toString());
     const newExponent = (parseInt(inputExponent) - exponentOffset).toString();
     let inputClean = inputDecimal.replace(".","");
     inputClean = inputClean.replace("-", "").length < 16 ? signExtend(inputClean, 16) : inputClean.replace("-", "");
