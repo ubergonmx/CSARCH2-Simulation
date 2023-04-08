@@ -1,5 +1,4 @@
-import Decimal from "decimal.js";
-import { convert } from "./DPDSolver";
+import { convertToDPD } from "./DPDSolver";
 
 // gets exponent continuation from given exponent
 export function getExponent(exponent: string): string {
@@ -12,8 +11,8 @@ export function getExponent(exponent: string): string {
 export function getCombination(msd: string, exponent: string): string {
   let combinationField = "";
   const solvedExponent = solveExponent(exponent); // solved exponent is the exponent added to 398 and is in 10 bit format
-  const tempDec = new Decimal(msd);
-  let msdBinary = tempDec.toBinary().replace("0b", "");
+  let msdBinary = parseInt(msd, 10).toString(2)
+
   if (msdBinary.length < 3) {
     while (msdBinary.length !== 3) {
       msdBinary = "0" + msdBinary;
@@ -39,22 +38,21 @@ export function getCoefficient(remainingDigits: string): string {
   // starting from the lsd of the remaining digits, get the dpd of 3 digits and add it to the coefficient field
   for (let i = remainingDigits.length - 1; i >= 0; i -= 3) {
     const threeDigitNum = remainingDigits[i - 2] + remainingDigits[i - 1] + remainingDigits[i];
-    console.log(threeDigitNum);
-    coefficientField = convert(threeDigitNum) + coefficientField;
+    coefficientField = convertToDPD(threeDigitNum) + coefficientField;
   }
   return coefficientField;
 }
 
 // gets the hexadecimal representation of the given binary string
 export function getHex(binary: string): string {
-  console.log(binary);
-  return new Decimal(binary).toHexadecimal().replace("0x", "");
+  // split binary string into half
+  const firstHalf = binary.substring(0, binary.length / 2);
+  const secondHalf = binary.substring(binary.length / 2);  
+  return parseInt(firstHalf, 2).toString(16).toUpperCase() + parseInt(secondHalf, 2).toString(16).toUpperCase(); 
 }
 
 function solveExponent(exponent: string): string {
-  exponent = (parseInt(exponent) + 398).toString();
-  const exponentDec = new Decimal(exponent);
-  let exponentBin = exponentDec.toBinary().replace("0b", "");
+  let exponentBin = (parseInt(exponent) + 398).toString(2);
   if (exponentBin.length < 10) {
     while (exponentBin.length !== 10) {
       exponentBin = "0" + exponentBin;

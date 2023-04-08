@@ -2,7 +2,7 @@ import Decimal from "decimal.js";
 
 // assumes input is correct: 3 digit num formatted as a string
 // returns 10 bit dpd of the corresponding 3 digit num as a string
-export function convert(threeDigitNum: string): string {
+export function convertToDPD(threeDigitNum: string): string {
   let majors = "";
   let encodedDPD = "";
   let dpd = "";
