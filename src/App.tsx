@@ -12,9 +12,8 @@ function App(): JSX.Element {
 
   function handleBinaryConvert(): void {
     const sign = inputDecimal[0] === "-" ? "1" : "0";
-    const exponentOffset = normalizeInput(inputDecimal);
+    const exponentOffset = getExponentOffset(inputDecimal);
     const newExponent = (parseInt(inputExponent) - exponentOffset).toString();
-    console.log("old exponent is " + inputExponent + " new exponent is " + newExponent);
     let inputClean = inputDecimal.replace(".","");
     inputClean = inputClean.replace("-", "").length < 16 ? signExtend(inputClean, 16) : inputClean.replace("-", "");
     const combinationField = getCombination(inputClean[0], newExponent);
@@ -69,7 +68,7 @@ function App(): JSX.Element {
     return binary;
   }
 
-  function normalizeInput(inputDecimal: string): number{
+  function getExponentOffset(inputDecimal: string): number{
     let offset = inputDecimal.indexOf(".");
     offset = offset !== -1 ? inputDecimal.length - offset - 1 : 0
     return offset;
