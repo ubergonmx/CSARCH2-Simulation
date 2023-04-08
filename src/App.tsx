@@ -10,14 +10,11 @@ function App(): JSX.Element {
 
   function handleBinaryConvert(): void {
     const msd = "7";
-    const combifield = getCombination(msd, inputDecimal);
-    console.log(combifield);
-    const exponentfield = getExponent(inputDecimal);
-    console.log(exponentfield);
-    setBinary(combifield + "  " + exponentfield);
-    // console.log(inputDecimal);
-    // console.log(convert(inputDecimal));
-    // setBinary(convert(inputDecimal));
+    const combinationField = getCombination(msd, inputDecimal);
+    console.log(combinationField);
+    const exponentField = getExponent(inputDecimal);
+    console.log(exponentField);
+    setBinary(combinationField + "  " + exponentField);
   }
   // create a function that sign extends a binary string
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
