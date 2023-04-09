@@ -66,7 +66,6 @@ function getDPD(encodedDPD: string, threeDigitNum: string): string {
 
   for (let i = 0; i < encodedDPD.length; i++) {
     let index = encodedDPD[i];
-    console.log(index);
     if (index !== "0" && index !== "1") {
       index = (index.charCodeAt(0) - "a".charCodeAt(0)).toString();
       dpd += bin[parseInt(index)];

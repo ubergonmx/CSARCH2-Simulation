@@ -11,6 +11,7 @@ function App(): JSX.Element {
   const [hex, setHex] = useState("");
 
   function handleBinaryConvert(): void {
+    checkInputs();
     const sign = inputDecimal[0] === "-" ? "1" : "0";
     const exponentOffset = getExponentOffset(parseFloat(inputDecimal).toString());
     const newExponent = (parseInt(inputExponent) - exponentOffset).toString();
@@ -22,6 +23,11 @@ function App(): JSX.Element {
     const binaryString = `${sign}${combinationField}${exponentContinuation}${coefficientContinuation}`;
     setBinary(`${sign} ${combinationField} ${exponentContinuation} ${coefficientContinuation}`);
     setHex(getHex(binaryString));
+  }
+
+  function checkInputs(): void {
+    if(inputDecimal === "") setInputDecimal("0.0");
+    if(inputExponent === "") setInputExponent("0");
   }
 
   // create a function that sign extends a decimal string
@@ -92,19 +98,23 @@ function App(): JSX.Element {
           <div className="flex lg:w-2/3 w-full sm:flex-row flex-col mx-auto px-8 sm:px-0 items-end sm:space-x-4 sm:space-y-0 space-y-4">
             <div className="relative sm:mb-0 flex-grow w-full">
               <label htmlFor="decimal" className="leading-7 text-sm text-gray-400">
-                Decimal (up to 16 digit)
+                Decimal (up to 16 digits)
               </label>
               <input
                 onChange={(e) => {
                   setInputDecimal(e.target.value);
                 }}
+                placeholder="0.0"
                 type="number"
                 id="decimal"
                 name="decimal"
                 className="w-full bg-gray-800 bg-opacity-40 rounded border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900 focus:bg-transparent text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
               />
             </div>
-            <div className="relative sm:mb-0 flex-grow w-full">
+            <div className="flex-grow w-16">
+              <p className="text-lg" >x 10</p>
+            </div>
+            <div className="relative sm:mb-0 flex-grow-0 w-36">
               <label htmlFor="exponent" className="leading-7 text-sm text-gray-400">
                 Exponent
               </label>
@@ -112,6 +122,7 @@ function App(): JSX.Element {
                 onChange={(e) => {
                   setInputExponent(e.target.value);
                 }}
+                placeholder="0"
                 type="number"
                 id="exponent"
                 name="exponent"
@@ -120,7 +131,8 @@ function App(): JSX.Element {
             </div>
             <button
               onClick={handleBinaryConvert}
-              className="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+              // className="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+              className="btn btn-primary"
             >
               Convert
             </button>

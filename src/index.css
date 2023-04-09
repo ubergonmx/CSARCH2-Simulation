@@ -19,14 +19,14 @@ a {
 h1 {
   @apply text-[3.2em] leading-[1.1];
 }
-button {
+/* button {
   @apply border text-[1em] font-medium bg-[#1a1a1a] cursor-pointer transition-[border-color] duration-[0.25s] px-[1.2em] py-[0.6em] rounded-lg border-solid border-transparent hover:border-[#646cff];
   font-family: inherit;
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
+} */
 @media (prefers-color-scheme: light) {
   :root {
     @apply text-[#213547] bg-white;
@@ -34,7 +34,7 @@ button:focus-visible {
   a:hover {
     @apply text-[#747bff];
   }
-  button {
+  /* button {
     @apply bg-[#f9f9f9];
-  }
+  } */
 }
