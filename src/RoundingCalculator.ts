@@ -11,41 +11,62 @@ export function truncate(input: string): string {
 
 export function ceiling(input: string): string {
     const sign = input[0] === "-" ? -1: 1;
-    if(sign === -1) // if negative, remove - 
+    if(sign === -1){ // if negative, remove - 
         input = input.substring(1);
+    }
+
     const signSymbol = sign === -1 ? "-":"";
     const length = input.includes(".") ? 17 : 16;
-
+    const dotIndex = input.indexOf(".");
+    const decimalPlaces = length - dotIndex -1;
+    
     let numberToRound = input.substring(length-1, input.length);
     numberToRound = numberToRound.slice(0,1) + "." + numberToRound.slice(1);
     numberToRound = (parseFloat(numberToRound) * sign).toString();
     const lastDigit = Math.ceil(parseFloat(numberToRound)) * sign;
-    const roundedNumber = input.substring(0, length-1);
-    return signSymbol + roundedNumber + lastDigit.toString();
+    let roundedNumber = input.substring(0, length-1);
+
+    roundedNumber = lastDigit === 10?  roundedNumber = adder(roundedNumber, decimalPlaces, length) 
+                                    : roundedNumber = roundedNumber + lastDigit.toString();
+
+    return signSymbol + roundedNumber;
 }
 
 export function floor(input: string): string {
     const sign = input[0] === "-" ? -1: 1;
-    if(sign === -1) // if negative, remove - 
+    if(sign === -1){ // if negative, remove - 
         input = input.substring(1);
+    }
+    
     const signSymbol = sign === -1 ? "-":"";
     const length = input.includes(".") ? 17 : 16;
-
+    const dotIndex = input.indexOf(".");
+    const decimalPlaces = length - dotIndex -1;
+    
     let numberToRound = input.substring(length-1, input.length);
     numberToRound = numberToRound.slice(0,1) + "." + numberToRound.slice(1);
     numberToRound = (parseFloat(numberToRound) * sign).toString();
     const lastDigit = Math.floor(parseFloat(numberToRound)) * sign;
-    const roundedNumber = input.substring(0, length-1);
-    return signSymbol + roundedNumber + lastDigit.toString();
+    let roundedNumber = input.substring(0, length-1);
+
+    roundedNumber = lastDigit === 10?  roundedNumber = adder(roundedNumber, decimalPlaces, length) 
+                                    : roundedNumber = roundedNumber + lastDigit.toString();
+
+
+    return signSymbol + roundedNumber;
 }
 
 export function rtne(input: string): string {
     const sign = input[0] === "-" ? -1: 1;
-    if(sign === -1) // if negative, remove - 
+    if(sign === -1){ // if negative, remove - 
         input = input.substring(1);
-    const signSymbol = sign === -1 ? "-":"";
+    }
 
+    const signSymbol = sign === -1 ? "-":"";
+    const dotIndex = input.indexOf(".");
     const length = input.includes(".") ? 17 : 16;
+
+    const decimalPlaces = length - dotIndex -1;
     let numberToRound = input.substring(length-1, input.length);
     numberToRound = numberToRound.slice(0,1) + "." + numberToRound.slice(1);
     let lastDigit = 0;
@@ -55,7 +76,26 @@ export function rtne(input: string): string {
     else{ // else do normal rounding
         lastDigit = Math.round(parseFloat(numberToRound));
     }
-    const roundedNumber = input.substring(0, length-1);
-    return signSymbol + roundedNumber + lastDigit.toString();
+
+    let roundedNumber = input.substring(0, length-1);
+
+    roundedNumber = lastDigit === 10?  roundedNumber = adder(roundedNumber, decimalPlaces, length) 
+                                    : roundedNumber = roundedNumber + lastDigit.toString();
+
+
+    return signSymbol + roundedNumber;
 }
 
+function adder(roundedNumber: string, decimalPlaces :number, length: number) :string{
+    const adder = 0.1 * Math.pow(10, - (decimalPlaces - 2));
+    roundedNumber = (parseFloat(roundedNumber) + adder).toString();
+    if(!roundedNumber.includes(".")){
+        roundedNumber += ".";
+    }
+    if(roundedNumber.length < length){
+        while(roundedNumber.length !== length){
+            roundedNumber += "0";
+        }
+    }
+    return roundedNumber;
+}
