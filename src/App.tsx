@@ -9,6 +9,8 @@ function App(): JSX.Element {
   const decimalInput = useRef<HTMLInputElement>(null);
   const exponentInput = useRef<HTMLInputElement>(null);
   
+  const [roundingOption, setRoundingOption] = useState("truncate");
+  const [specialCase, setSpecialCase] = useState("");
   const [binary, setBinary] = useState("");
   const [hex, setHex] = useState("");
 
@@ -28,19 +30,21 @@ function App(): JSX.Element {
     if (needRoundOff) {
       console.log("rounding");
       let exponent;
-      [inputDecimal, exponent] = roundDecimal(inputDecimal, 'rtne');
+      [inputDecimal, exponent] = roundDecimal(inputDecimal, roundingOption);
       exponentOffset = parseInt(exponent);
+      console.log("rounded exp:",exponent);
     }
     else{
       exponentOffset = getExponentOffset(parseFloat(inputDecimal).toString());
     }    
     const newExponent = (parseInt(inputExponent) - exponentOffset).toString();
     console.log(exponentOffset, newExponent);
-    
     console.log(inputDecimal, inputExponent);
+
     const sign = inputDecimal[0] === "-" ? "1" : "0";
     let inputClean = inputDecimal.replace(".","");
-    inputClean = inputClean.replace("-", "").length < 16 ? zeroExtend(inputClean, 16) : inputClean.replace("-", "");
+    inputClean = inputClean.replace("-", "").length < 16 ? zeroExtend(inputClean, 16).replace("-", "") : inputClean.replace("-", "");
+    console.log("inputClean:", inputClean);
     const combinationField = getCombination(inputClean[0], newExponent);
     const exponentContinuation = getExponent(newExponent);
     const coefficientContinuation = getCoefficient(inputClean);
@@ -57,9 +61,10 @@ function App(): JSX.Element {
     const copyEnd = isNegative ? 17 : 16;
     const copy = input.substring(copyStart,copyEnd).replace(".", "");
     const cleanInput = input.replace(".", "");
-
-    const exponentOffset = getExponentOffset(parseFloat(copy).toString());
-
+    let inputTrimmed = input.substring(copyStart,copyEnd);
+    if(inputTrimmed.includes(".")) inputTrimmed = input.substring(copyStart, copyEnd+1);
+    const exponentOffset = getExponentOffset(parseFloat(inputTrimmed).toString());
+    console.log("rounding exponentOffset:", input.substring(copyStart,copyEnd), exponentOffset);
     roundIt = roundDecimalOption(cleanInput.substring(copyEnd-1, copyEnd+1), roundOption, isNegative);
     isRtne = cleanInput.substring(17, input.length).match(/[1-9]/g) !== null;
     if (roundIt || isRtne) {
@@ -79,7 +84,12 @@ function App(): JSX.Element {
         if (i !== 0) return [true, false];
         continue;
       }
-      if (input[i] === ".") continue;
+      if (input[i] === ".") {
+        if (i === 1){
+          if (input[0] === "-") return [true, false];
+        }
+        continue;
+      }
       if (isNaN(parseInt(input[i]))) return [true, false];
       if (isOnlyZero && input[i] === "0") {
         continue;
@@ -169,7 +179,31 @@ function App(): JSX.Element {
             </p>
           </div>
           <div className="flex lg:w-2/3 w-full sm:flex-row flex-col mx-auto px-8 sm:px-0 items-end sm:space-x-4 sm:space-y-0 space-y-4">
-            <div className="relative sm:mb-0 flex-grow w-full">
+            <div className="relative sm:mb-0 flex-grow">
+              <div className="dropdown dropdown-hover">
+                <label tabIndex={0} className="btn bg-gray-800 hover:border-gray-800  border-gray-700">{
+                  specialCase === "" ? "No special case" : specialCase
+                  }</label>
+                <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                  <li><a onClick={() => {setSpecialCase("")}}>None</a></li>
+                  <li><a onClick={() => {setSpecialCase("+infinity")}}>+Infinity</a></li>
+                  <li><a onClick={() => {setSpecialCase("-infinity")}}>-Infinity</a></li>
+                  <li><a onClick={() => {setSpecialCase("NaN")}}>NaN</a></li>
+                </ul>
+              </div>
+            </div>
+            <div className="relative sm:mb-0 flex-grow">
+              <div className="dropdown dropdown-hover">
+                <label tabIndex={0} className="btn bg-gray-800 hover:border-gray-800  border-gray-700">{ roundingOption }</label>
+                <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                  <li><a onClick={() => {setRoundingOption("truncate")}}>Truncate</a></li>
+                  <li><a onClick={() => {setRoundingOption("ceiling")}}>Ceiling</a></li>
+                  <li><a onClick={() => {setRoundingOption("floor")}}>Floor</a></li>
+                  <li><a onClick={() => {setRoundingOption("rtne")}}>Round to nearest (TE)</a></li>
+                </ul>
+              </div>
+            </div>
+            <div className="relative sm:mb-0 flex-grow w-96">
               <label htmlFor="decimal" className="leading-7 text-sm text-gray-400">
                 Decimal (up to 16 digits)
               </label>
@@ -183,7 +217,7 @@ function App(): JSX.Element {
               />
             </div>
             <div className="flex-grow w-16">
-              <p className="text-lg" >x 10</p>
+              <p className="text-lg text-center" >x 10</p>
             </div>
             <div className="relative sm:mb-0 flex-grow-0 w-36">
               <label htmlFor="exponent" className="leading-7 text-sm text-gray-400">
