@@ -42,15 +42,27 @@ function App(): JSX.Element {
       console.log("rounded exp:",exponent);
     }
     else{
-      exponentOffset = getExponentOffset(parseFloat(inputDecimal).toString());
+      exponentOffset = getExponentOffset(parseDecimal(inputDecimal));
     }    
     const newExponent = (parseInt(inputExponent) - exponentOffset).toString();
     console.log(exponentOffset, newExponent);
     console.log(inputDecimal, inputExponent);
 
-    const sign = inputDecimal[0] === "-" ? "1" : "0";
+    if(parseInt(newExponent) < -398){
+      setBinary("Exponent out of range");
+      setHex("Exponent out of range");
+      return;
+    }
+    const isNegative = inputDecimal[0] === "-";
+    if(parseInt(newExponent) > 369){
+      specialCases(isNegative ? "-Infinity" : "+Infinity")
+      console.log("infinity");
+      return;
+    }
+    
+    const sign = isNegative ? "1" : "0";
     let inputClean = inputDecimal.replace(".","");
-    inputClean = inputClean.replace("-", "").length < 16 ? zeroExtend(inputClean, 16).replace("-", "") : inputClean.replace("-", "");
+    inputClean = inputClean.replace("-", "").length < 16 ? zeroExtend(inputClean, 16).replace("-", "") : inputClean.replace("-", "").substring(0,16);
     console.log("inputClean:", inputClean);
     const combinationField = getCombination(inputClean[0], newExponent);
     const exponentContinuation = getExponent(newExponent);
@@ -68,12 +80,20 @@ function App(): JSX.Element {
     const copyEnd = isNegative ? 17 : 16;
     const copy = input.substring(copyStart,copyEnd).replace(".", "");
     const cleanInput = input.replace(".", "");
+    const extraDigits = cleanInput.substring(copyEnd+1, cleanInput.length); // plus 1 to skip the first extra digit
+
     let inputTrimmed = input.substring(copyStart,copyEnd);
     if(inputTrimmed.includes(".")) inputTrimmed = input.substring(copyStart, copyEnd+1);
-    const exponentOffset = getExponentOffset(parseFloat(inputTrimmed).toString());
+    let exponentOffset = getExponentOffset(parseDecimal(inputTrimmed));
+    for(let i = 0; i < extraDigits.length; i++){
+      if(extraDigits[i] === ".") break;
+      exponentOffset--;
+    }
+    exponentOffset--; // minus 1 to include the skipped first extra digit
     console.log("rounding exponentOffset:", input.substring(copyStart,copyEnd), exponentOffset);
+    
     roundIt = roundDecimalOption(cleanInput.substring(copyEnd-1, copyEnd+1), roundOption, isNegative);
-    isRtne = cleanInput.substring(17, input.length).match(/[1-9]/g) !== null;
+    isRtne = extraDigits.match(/[1-9]/g) !== null;
     if (roundIt || isRtne) {
       const rounded = parseFloat(copy) + 1;
       const sign = isNegative ? "-" : "";
@@ -81,6 +101,16 @@ function App(): JSX.Element {
       return [sign+rounded.toString(), exponentOffset.toString()];
     }
     return [copy, exponentOffset.toString()];
+  }
+
+  function parseDecimal(value: string): string {
+    const num = parseFloat(value);
+    const decimalPart = value.split('.')[1] ?? "";
+    if (decimalPart !== undefined && decimalPart !== "" && decimalPart.match(/^[0]+$/) !== null) {
+      return "0";
+    } 
+  
+    return num.toFixed(decimalPart.length);
   }
 
   function checkDirtyInput(input: string): boolean[]{ // returns [isFail, needRoundOff]
@@ -165,6 +195,7 @@ function App(): JSX.Element {
   }
 
   function getExponentOffset(inputDecimal: string): number{
+    console.log("inputDecimal:", inputDecimal);
     let offset = inputDecimal.indexOf(".");
     offset = offset !== -1 ? inputDecimal.length - offset - 1 : 0
     return offset;

@@ -47,9 +47,10 @@ export function getCoefficient(remainingDigits: string): string {
 export function getHex(binary: string): string {
   // split binary string into half
   const firstHalf = binary.substring(0, binary.length / 2);
+  let f = parseInt(firstHalf, 2).toString(16).toUpperCase(); while (f.length < 8) f = '0' + f
   const secondHalf = binary.substring(binary.length / 2);
   let s = parseInt(secondHalf, 2).toString(16).toUpperCase(); while (s.length < 8) s = '0' + s
-  return parseInt(firstHalf, 2).toString(16).toUpperCase() + s;
+  return f + s;
 }
 
 function solveExponent(exponent: string): string {
