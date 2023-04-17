@@ -153,6 +153,25 @@ function App(): JSX.Element {
     return offset;
   }
 
+  function specialCases(input :string) :void{
+    switch (input) {
+        case "+Infinity":
+            setBinary("0 11110 11111111 00000000000000000000000000000000000000000000000000");
+            setHex("7BFC000000000000");
+            break;
+        case "-Infinity":
+            setBinary("1 11110 11111111 00000000000000000000000000000000000000000000000000");
+            setHex("FBFC000000000000");
+            break;
+        case "NaN":
+            setBinary("0 11111 11111111 00000000000000000000000000000000000000000000000000");
+            setHex("7FFC000000000000");
+            break;
+        default:
+            break;
+    }
+  }
+
   return (
     <div className="App">
       {/* <Header /> */}
