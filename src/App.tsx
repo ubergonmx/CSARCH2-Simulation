@@ -15,6 +15,12 @@ function App(): JSX.Element {
   const [hex, setHex] = useState("");
 
   function handleBinaryConvert(): void {
+    if (specialCase !== "") {
+      console.log("special case:", specialCase)
+      specialCases(specialCase);
+      return;
+    }
+
     let [inputDecimal, inputExponent] = getInputValues();
     const [isFail, needRoundOff] = checkDirtyInput(inputDecimal);
     
@@ -205,8 +211,8 @@ function App(): JSX.Element {
                   }</label>
                 <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
                   <li><a onClick={() => {setSpecialCase("")}}>None</a></li>
-                  <li><a onClick={() => {setSpecialCase("+infinity")}}>+Infinity</a></li>
-                  <li><a onClick={() => {setSpecialCase("-infinity")}}>-Infinity</a></li>
+                  <li><a onClick={() => {setSpecialCase("+Infinity")}}>+Infinity</a></li>
+                  <li><a onClick={() => {setSpecialCase("-Infinity")}}>-Infinity</a></li>
                   <li><a onClick={() => {setSpecialCase("NaN")}}>NaN</a></li>
                 </ul>
               </div>
