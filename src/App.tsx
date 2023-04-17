@@ -18,7 +18,6 @@ function App(): JSX.Element {
     
     let exponentOffset = 0;
 
-    console.log(inputDecimal, inputExponent);
     console.log(isFail, needRoundOff);
   
     if (isFail) {
@@ -36,6 +35,8 @@ function App(): JSX.Element {
     }    
     const newExponent = (parseInt(inputExponent) - exponentOffset).toString();
     console.log(exponentOffset, newExponent);
+    
+    console.log(inputDecimal, inputExponent);
     const sign = inputDecimal[0] === "-" ? "1" : "0";
     let inputClean = inputDecimal.replace(".","");
     inputClean = inputClean.replace("-", "").length < 16 ? zeroExtend(inputClean, 16) : inputClean.replace("-", "");
