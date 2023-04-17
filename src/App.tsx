@@ -26,6 +26,7 @@ function App(): JSX.Element {
       return;
     }
     if (needRoundOff) {
+      console.log("rounding");
       let exponent;
       [inputDecimal, exponent] = roundDecimal(inputDecimal, 'rtne');
       exponentOffset = parseInt(exponent);
@@ -74,7 +75,6 @@ function App(): JSX.Element {
     let isOnlyZero = true;
     let digits = 0;
     for (let i = 0; i < input.length; i++) {
-      console.log(input[i]);
       if (input[i] === "-") {
         if (i !== 0) return [true, false];
         continue;
@@ -82,18 +82,17 @@ function App(): JSX.Element {
       if (input[i] === ".") continue;
       if (isNaN(parseInt(input[i]))) return [true, false];
       if (isOnlyZero && input[i] === "0") {
-        isOnlyZero = true;
         continue;
       }
       if (isOnlyZero && input[i] !== "0") {
         isOnlyZero = false;
-        continue;
       }
-      if (!isOnlyZero && input[i] !== "0"){
+      if (!isOnlyZero){
         digits++;
         continue;
       }
     }
+    console.log(digits);
     if (digits > 16) return [false, true];
     return [false, false];
    }
