@@ -16,7 +16,7 @@ function App(): JSX.Element {
     const exponentOffset = getExponentOffset(parseFloat(inputDecimal).toString());
     const newExponent = (parseInt(inputExponent) - exponentOffset).toString();
     let inputClean = inputDecimal.replace(".","");
-    inputClean = inputClean.replace("-", "").length < 16 ? signExtend(inputClean, 16) : inputClean.replace("-", "");
+    inputClean = inputClean.replace("-", "").length < 16 ? zeroExtend(inputClean, 16) : inputClean.replace("-", "");
     const combinationField = getCombination(inputClean[0], newExponent);
     const exponentContinuation = getExponent(newExponent);
     const coefficientContinuation = getCoefficient(inputClean);
@@ -31,15 +31,15 @@ function App(): JSX.Element {
   }
 
   // create a function that sign extends a decimal string
-  function signExtend(decimal: string, length: number): string {
+  function zeroExtend(decimal: string, length: number): string {
     // remove the sign
+    const sign = decimal.includes ("-") ? "-" : "";
     decimal = decimal.replace("-", "");
     for (let i = decimal.length; i < length; i++) {
       decimal = "0" + decimal;
     }
-    return decimal;
+    return sign + decimal;
   }
-
   // create a function that sign extends a binary string
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function signExtendBinary(binary: string, length: number): string { 
