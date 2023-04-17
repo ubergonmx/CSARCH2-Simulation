@@ -1,20 +1,42 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "./App.css";
-import Header from "./Header";
-import Footer from "./Footer";
+// import Header from "./Header";
+// import Footer from "./Footer";
 import { getCombination, getExponent, getCoefficient, getHex } from "./Decimal64FtpConverter";
+import { roundDecimalOption } from "./RoundingCalculator";
 
 function App(): JSX.Element {
-  const [inputDecimal, setInputDecimal] = useState("");
-  const [inputExponent, setInputExponent] = useState("");
+  const decimalInput = useRef<HTMLInputElement>(null);
+  const exponentInput = useRef<HTMLInputElement>(null);
+  
   const [binary, setBinary] = useState("");
   const [hex, setHex] = useState("");
 
   function handleBinaryConvert(): void {
-    checkInputs();
-    const sign = inputDecimal[0] === "-" ? "1" : "0";
-    const exponentOffset = getExponentOffset(parseFloat(inputDecimal).toString());
+    let [inputDecimal, inputExponent] = getInputValues();
+    const [isFail, needRoundOff] = checkDirtyInput(inputDecimal);
+    
+    let exponentOffset = 0;
+
+    console.log(inputDecimal, inputExponent);
+    console.log(isFail, needRoundOff);
+  
+    if (isFail) {
+      setBinary("Invalid input");
+      setHex("Invalid input");
+      return;
+    }
+    if (needRoundOff) {
+      let exponent;
+      [inputDecimal, exponent] = roundDecimal(inputDecimal, 'rtne');
+      exponentOffset = parseInt(exponent);
+    }
+    else{
+      exponentOffset = getExponentOffset(parseFloat(inputDecimal).toString());
+    }    
     const newExponent = (parseInt(inputExponent) - exponentOffset).toString();
+    console.log(exponentOffset, newExponent);
+    const sign = inputDecimal[0] === "-" ? "1" : "0";
     let inputClean = inputDecimal.replace(".","");
     inputClean = inputClean.replace("-", "").length < 16 ? zeroExtend(inputClean, 16) : inputClean.replace("-", "");
     const combinationField = getCombination(inputClean[0], newExponent);
@@ -25,9 +47,60 @@ function App(): JSX.Element {
     setHex(getHex(binaryString));
   }
 
-  function checkInputs(): void {
-    if(inputDecimal === "") setInputDecimal("0.0");
-    if(inputExponent === "") setInputExponent("0");
+  function roundDecimal(input: string, roundOption:string): string[] {
+    let roundIt = false;
+    let isRtne = false;
+    const isNegative = input[0] === "-";
+    const copyStart = isNegative ? 1 : 0;
+    const copyEnd = isNegative ? 17 : 16;
+    const copy = input.substring(copyStart,copyEnd).replace(".", "");
+    const cleanInput = input.replace(".", "");
+
+    const exponentOffset = getExponentOffset(parseFloat(copy).toString());
+
+    roundIt = roundDecimalOption(cleanInput.substring(copyEnd-1, copyEnd+1), roundOption, isNegative);
+    isRtne = cleanInput.substring(17, input.length).match(/[1-9]/g) !== null;
+    if (roundIt || isRtne) {
+      const rounded = parseFloat(copy) + 1;
+      const sign = isNegative ? "-" : "";
+      if(rounded.toString().length > 16) return [sign+rounded.toString().substring(0,16), exponentOffset.toString()]; 
+      return [sign+rounded.toString(), exponentOffset.toString()];
+    }
+    return [copy, exponentOffset.toString()];
+  }
+
+  function checkDirtyInput(input: string): boolean[]{ // returns [isFail, needRoundOff]
+    let isOnlyZero = true;
+    let digits = 0;
+    for (let i = 0; i < input.length; i++) {
+      console.log(input[i]);
+      if (input[i] === "-") {
+        if (i !== 0) return [true, false];
+        continue;
+      }
+      if (input[i] === ".") continue;
+      if (isNaN(parseInt(input[i]))) return [true, false];
+      if (isOnlyZero && input[i] === "0") {
+        isOnlyZero = true;
+        continue;
+      }
+      if (isOnlyZero && input[i] !== "0") {
+        isOnlyZero = false;
+        continue;
+      }
+      if (!isOnlyZero && input[i] !== "0"){
+        digits++;
+        continue;
+      }
+    }
+    if (digits > 16) return [false, true];
+    return [false, false];
+   }
+
+  function getInputValues(): string[] {
+    const inputDecimal = decimalInput.current?.value;
+    const inputExponent = exponentInput.current?.value;
+    return [(inputDecimal === undefined || inputDecimal === "") ? "0.0" : inputDecimal, (inputExponent === undefined || inputExponent === "") ? "0" : inputExponent];
   }
 
   // create a function that sign extends a decimal string
@@ -82,7 +155,7 @@ function App(): JSX.Element {
 
   return (
     <div className="App">
-      <Header />
+      {/* <Header /> */}
       <section className="text-gray-400 bg-gray-900 body-font">
         <div className="container px-5 py-10 mx-auto">
           <div className="flex flex-col text-center items-center w-full mb-12">
@@ -101,9 +174,7 @@ function App(): JSX.Element {
                 Decimal (up to 16 digits)
               </label>
               <input
-                onChange={(e) => {
-                  setInputDecimal(e.target.value);
-                }}
+                ref={decimalInput}
                 placeholder="0.0"
                 type="number"
                 id="decimal"
@@ -119,9 +190,7 @@ function App(): JSX.Element {
                 Exponent
               </label>
               <input
-                onChange={(e) => {
-                  setInputExponent(e.target.value);
-                }}
+                ref={exponentInput}
                 placeholder="0"
                 type="number"
                 id="exponent"
@@ -148,7 +217,7 @@ function App(): JSX.Element {
           </div>
         </div>
       </section>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
