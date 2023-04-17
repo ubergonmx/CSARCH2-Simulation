@@ -4,6 +4,7 @@ import "./App.css";
 // import Footer from "./Footer";
 import { getCombination, getExponent, getCoefficient, getHex } from "./Decimal64FtpConverter";
 import { roundDecimalOption } from "./RoundingCalculator";
+import { downloadFile } from "./DownloadFile";
 
 function App(): JSX.Element {
   const decimalInput = useRef<HTMLInputElement>(null);
@@ -266,13 +267,23 @@ function App(): JSX.Element {
             </button>
           </div>
 
-          <div className="flex flex-col text-center w-full mt-12">
+          <div className="flex flex-col text-center w-full mt-12 items-center">
             <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
               {binary !== "" ? <>Binary: {binary}</> : <>Binary output...</>}
             </p>
             <p>
               {hex !== "" ? <>Hexadecimal: {hex}</> : <>Hexadecimal output...</>}
             </p>
+            {binary !== "" && hex !== "" && (
+              <button
+                onClick={()=>{
+                  downloadFile("output.txt", `Binary: ${binary}\nHexadecimal: ${hex}`)
+                }}
+                className="btn btn-ghost w-64"
+              >
+                Download output.txt
+              </button>
+            )}
           </div>
         </div>
       </section>
