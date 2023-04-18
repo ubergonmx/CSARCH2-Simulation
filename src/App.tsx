@@ -81,6 +81,7 @@ function App(): JSX.Element {
     const copy = input.substring(copyStart,copyEnd).replace(".", "");
     const cleanInput = input.replace(".", "");
     const extraDigits = input.substring(copyEnd, input.length);
+    const sign = isNegative ? "-" : "";
 
     let pointBelow16Digits = false;
     const inputTrimmed = input.substring(copyStart,copyEnd);
@@ -97,14 +98,15 @@ function App(): JSX.Element {
     console.log("rounding exponentOffset:", input.substring(copyStart,copyEnd), exponentOffset);
     
     roundIt = roundDecimalOption(cleanInput.substring(copyEnd-1, copyEnd+1), roundOption, isNegative);
+    console.log(roundIt);
     isRtne = roundOption === 'rtne' && input.substring(copyEnd+1, input.length).match(/[1-9]/g) !== null;
     if (roundIt || isRtne) {
-      const rounded = parseFloat(copy) + 1;
-      const sign = isNegative ? "-" : "";
+
+      const rounded = roundIt? parseFloat(copy) + 1 : parseFloat(copy);
       if(rounded.toString().length > 16) return [sign+rounded.toString().substring(0,16), exponentOffset.toString()]; 
       return [sign+rounded.toString(), exponentOffset.toString()];
     }
-    return [copy, exponentOffset.toString()];
+    return [sign+copy, exponentOffset.toString()];
   }
 
   function parseDecimal(value: string): string {
