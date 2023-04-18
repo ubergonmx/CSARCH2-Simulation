@@ -23,11 +23,11 @@ function App(): JSX.Element {
     }
 
     let [inputDecimal, inputExponent] = getInputValues();
-    const [isFail, needRoundOff] = checkDirtyInput(inputDecimal);
+    const [isFail, needRoundOff, isOnlyZero] = checkDirtyInput(inputDecimal);
     
     let exponentOffset = 0;
-
-    console.log(isFail, needRoundOff);
+    console.log("getInputValues()", inputDecimal, inputExponent)
+    console.log("checkDirtyInput()", isFail, needRoundOff);
   
     if (isFail) {
       setBinary("Invalid input");
@@ -42,7 +42,7 @@ function App(): JSX.Element {
       console.log("rounded exp:",exponent);
     }
     else{
-      exponentOffset = getExponentOffset(parseDecimal(inputDecimal)); // prev used parseDecimal
+      exponentOffset = getExponentOffset(isOnlyZero ? parseDecimal(inputDecimal) : inputDecimal); // prev used parseDecimal
     }    
     const newExponent = (parseInt(inputExponent) - exponentOffset).toString();
     console.log(exponentOffset, newExponent);
@@ -84,10 +84,13 @@ function App(): JSX.Element {
     const sign = isNegative ? "-" : "";
 
     let pointBelow16Digits = false;
-    const inputTrimmed = input.substring(copyStart,copyEnd);
+    let inputTrimmed = input.substring(copyStart,copyEnd);
     console.log("inputTrimmed:", inputTrimmed);
-    if(inputTrimmed.includes(".")) pointBelow16Digits = true;
-    let exponentOffset = getExponentOffset(inputTrimmed); // prev used parseDecimal
+    if(inputTrimmed.includes(".")) {
+      pointBelow16Digits = true;
+      inputTrimmed = input.substring(copyStart,copyEnd+1);
+    }
+    let exponentOffset = getExponentOffset(inputTrimmed);
     console.log("inputTrimmed2:", inputTrimmed, extraDigits, exponentOffset);
     if(!pointBelow16Digits){
       for(let i = 0; i < extraDigits.length; i++){
@@ -98,10 +101,9 @@ function App(): JSX.Element {
     console.log("rounding exponentOffset:", input.substring(copyStart,copyEnd), exponentOffset);
     
     roundIt = roundDecimalOption(cleanInput.substring(copyEnd-1, copyEnd+1), roundOption, isNegative);
-    console.log(roundIt);
+    console.log(`substring(${copyEnd-1}, ${copyEnd+1})`,cleanInput.substring(copyEnd-1, copyEnd+1), roundIt);
     isRtne = roundOption === 'rtne' && input.substring(copyEnd+1, input.length).match(/[1-9]/g) !== null;
     if (roundIt || isRtne) {
-
       const rounded = roundIt? parseFloat(copy) + 1 : parseFloat(copy);
       if(rounded.toString().length > 16) return [sign+rounded.toString().substring(0,16), exponentOffset.toString()]; 
       return [sign+rounded.toString(), exponentOffset.toString()];
@@ -119,21 +121,21 @@ function App(): JSX.Element {
     return num.toFixed(decimalPart.length);
   }
 
-  function checkDirtyInput(input: string): boolean[]{ // returns [isFail, needRoundOff]
+  function checkDirtyInput(input: string): [boolean, boolean, boolean]{ // returns [isFail, needRoundOff]
     let isOnlyZero = true;
     let digits = 0;
     for (let i = 0; i < input.length; i++) {
       if (input[i] === "-") {
-        if (i !== 0) return [true, false];
+        if (i !== 0) return [true, false, isOnlyZero];
         continue;
       }
       if (input[i] === ".") {
         if (i === 1){
-          if (input[0] === "-") return [true, false];
+          if (input[0] === "-") return [true, false, isOnlyZero];
         }
         continue;
       }
-      if (isNaN(parseInt(input[i]))) return [true, false];
+      if (isNaN(parseInt(input[i]))) return [true, false, isOnlyZero];
       if (isOnlyZero && input[i] === "0") {
         continue;
       }
@@ -146,8 +148,8 @@ function App(): JSX.Element {
       }
     }
     console.log(digits);
-    if (digits > 16) return [false, true];
-    return [false, false];
+    if (digits > 16) return [false, true, isOnlyZero];
+    return [false, false, isOnlyZero];
    }
 
   function getInputValues(): string[] {
