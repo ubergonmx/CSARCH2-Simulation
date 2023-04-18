@@ -42,7 +42,7 @@ function App(): JSX.Element {
       console.log("rounded exp:",exponent);
     }
     else{
-      exponentOffset = getExponentOffset(parseDecimal(inputDecimal));
+      exponentOffset = getExponentOffset(parseDecimal(inputDecimal)); // prev used parseDecimal
     }    
     const newExponent = (parseInt(inputExponent) - exponentOffset).toString();
     console.log(exponentOffset, newExponent);
@@ -80,20 +80,21 @@ function App(): JSX.Element {
     const copyEnd = isNegative ? 17 : 16;
     const copy = input.substring(copyStart,copyEnd).replace(".", "");
     const cleanInput = input.replace(".", "");
-    const extraDigits = cleanInput.substring(copyEnd+1, cleanInput.length); // plus 1 to skip the first extra digit
+    const extraDigits = input.substring(copyEnd, input.length);
 
     let inputTrimmed = input.substring(copyStart,copyEnd);
+    console.log("inputTrimmed:", inputTrimmed);
     if(inputTrimmed.includes(".")) inputTrimmed = input.substring(copyStart, copyEnd+1);
-    let exponentOffset = getExponentOffset(parseDecimal(inputTrimmed));
+    let exponentOffset = getExponentOffset(inputTrimmed); // prev used parseDecimal
+    console.log("inputTrimmed2:", inputTrimmed, extraDigits, exponentOffset);
     for(let i = 0; i < extraDigits.length; i++){
       if(extraDigits[i] === ".") break;
       exponentOffset--;
     }
-    exponentOffset--; // minus 1 to include the skipped first extra digit
     console.log("rounding exponentOffset:", input.substring(copyStart,copyEnd), exponentOffset);
     
     roundIt = roundDecimalOption(cleanInput.substring(copyEnd-1, copyEnd+1), roundOption, isNegative);
-    isRtne = extraDigits.match(/[1-9]/g) !== null;
+    isRtne = roundOption === 'rtne' && input.substring(copyEnd+1, input.length).match(/[1-9]/g) !== null;
     if (roundIt || isRtne) {
       const rounded = parseFloat(copy) + 1;
       const sign = isNegative ? "-" : "";
