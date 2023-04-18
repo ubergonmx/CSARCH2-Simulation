@@ -82,14 +82,17 @@ function App(): JSX.Element {
     const cleanInput = input.replace(".", "");
     const extraDigits = input.substring(copyEnd, input.length);
 
-    let inputTrimmed = input.substring(copyStart,copyEnd);
+    let pointBelow16Digits = false;
+    const inputTrimmed = input.substring(copyStart,copyEnd);
     console.log("inputTrimmed:", inputTrimmed);
-    if(inputTrimmed.includes(".")) inputTrimmed = input.substring(copyStart, copyEnd+1);
+    if(inputTrimmed.includes(".")) pointBelow16Digits = true;
     let exponentOffset = getExponentOffset(inputTrimmed); // prev used parseDecimal
     console.log("inputTrimmed2:", inputTrimmed, extraDigits, exponentOffset);
-    for(let i = 0; i < extraDigits.length; i++){
-      if(extraDigits[i] === ".") break;
-      exponentOffset--;
+    if(!pointBelow16Digits){
+      for(let i = 0; i < extraDigits.length; i++){
+        if(extraDigits[i] === ".") break;
+        exponentOffset--;
+      }
     }
     console.log("rounding exponentOffset:", input.substring(copyStart,copyEnd), exponentOffset);
     
