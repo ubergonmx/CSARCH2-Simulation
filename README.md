@@ -14,3 +14,8 @@ To install and run the project locally, follow these steps:
 2. Open terminal/cmd and install dependencies: `npm install`
 3. After the installation of npm packages, type `npm run dev`
 4. Open the URL given in the console.
+
+## Team Members
+- Aaron Palpallatoc (Tech Lead)
+- Gelson Sze (Frontend developer)
+- Sean Umpad (QA)

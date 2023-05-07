@@ -228,6 +228,21 @@ function App(): JSX.Element {
             break;
     }
   }
+  
+  function textToolTip(text: string, tip: string, space:boolean = true): JSX.Element {
+    return <div className="tooltip" data-tip={tip}>
+      {text}{space ? '\u00A0' : ""}
+    </div>
+  }
+
+  function binaryFormatByParts(output: string) : JSX.Element {
+    const binary = output.split(" ");
+    const sign = textToolTip(binary[0], "Sign bit");
+    const combinationField = textToolTip(binary[1], "Combination field");
+    const exponentField = textToolTip(binary[2], "Exponent field");
+    const coefficientContinuation = textToolTip(binary[3], "Coefficient continuation", false);
+    return <div className="inline-flex flex-wrap">{sign} {combinationField} {exponentField} {coefficientContinuation}</div>
+  }
 
   return (
     <div className="App">
@@ -309,7 +324,7 @@ function App(): JSX.Element {
 
           <div className="flex flex-col text-center w-full mt-12 items-center">
             <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
-              {binary !== "" ? <>Binary: {binary}</> : <>Binary output...</>}
+              {binary !== "" ? <>Binary: {binaryFormatByParts(binary)}</> : <>Binary output...</>}
             </p>
             <p>
               {hex !== "" ? <>Hexadecimal: {hex}</> : <>Hexadecimal output...</>}
