@@ -69,7 +69,7 @@ function App(): JSX.Element {
     const coefficientContinuation = getCoefficient(inputClean);
     const binaryString = `${sign}${combinationField}${exponentContinuation}${coefficientContinuation}`;
     setBinary(`${sign} ${combinationField} ${exponentContinuation} ${coefficientContinuation}`);
-    setHex(getHex(binaryString));
+    setHex(getHex(binaryString) as string);
   }
 
   function roundDecimal(input: string, roundOption:string): string[] {
@@ -229,19 +229,33 @@ function App(): JSX.Element {
     }
   }
   
-  function textToolTip(text: string, tip: string, space:boolean = true): JSX.Element {
-    return <div className="tooltip" data-tip={tip}>
-      {text}{space ? '\u00A0' : ""}
+  function styleToolTip(text: string, tip: string, space:boolean = true): JSX.Element {
+    const style = space ? "inline-flex flex-wrap px-2 py-1 rounded-lg text-xs font-medium leading-4 bg-gray-800 text-gray-300 ml-1" : "inline-flex flex-wrap px-2 py-1 rounded-lg text-xs font-medium leading-4 bg-gray-800 text-gray-300";
+    return <div className={style+" hover:bg-primary ease-in-out transition-colors tooltip tooltip-primary"} data-tip={tip}>
+      {text}
     </div>
+  }
+
+  function textToolTip(text: string, tip: string): JSX.Element {
+     return <span className="hover:bg-primary ease-in-out transition-all tooltip tooltip-primary" data-tip={tip}>
+      {text}
+    </span>
   }
 
   function binaryFormatByParts(output: string) : JSX.Element {
     const binary = output.split(" ");
-    const sign = textToolTip(binary[0], "Sign bit");
-    const combinationField = textToolTip(binary[1], "Combination field");
-    const exponentField = textToolTip(binary[2], "Exponent field");
-    const coefficientContinuation = textToolTip(binary[3], "Coefficient continuation", false);
+    const sign = styleToolTip(binary[0], "Sign bit", false);
+    const combinationField = styleToolTip(binary[1], "Combination field");
+    const exponentField = styleToolTip(binary[2], "Exponent field");
+    const coefficientContinuation = styleToolTip(binary[3], "Coefficient continuation");
     return <div className="inline-flex flex-wrap">{sign} {combinationField} {exponentField} {coefficientContinuation}</div>
+  }
+
+  function hexFormatByParts(output: string) : JSX.Element {
+    const [, fhh, shh, fhb, shb] = getHex(output, true);
+    const firstHalf = textToolTip(fhh, fhb);
+    const secondHalf = textToolTip(shh, shb); 
+    return <div className="inline-flex flex-wrap px-2 py-1 rounded-lg text-xs font-medium leading-4 bg-gray-800 text-gray-300">{firstHalf}{secondHalf}</div>
   }
 
   return (
@@ -255,8 +269,8 @@ function App(): JSX.Element {
               IEEE-754 Decimal-64 floating-point converter
             </h1>
             <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
-              Simply enter the corresponding inputs, and the website will generate its equivalent in hexadecimal and
-              binary format, along with additional information about its sign, exponent, and mantissa.
+              Simply enter the corresponding inputs to generate its equivalent in hexadecimal and binary format. 
+              In binary output, you can hover to see what part is the sign, combination field, exponent field, and coefficient continuation.
             </p>
           </div>
           <div className="flex lg:w-2/3 w-full sm:flex-row flex-col mx-auto px-8 sm:px-0 items-end sm:space-x-4 sm:space-y-0 space-y-4">
@@ -327,7 +341,7 @@ function App(): JSX.Element {
               {binary !== "" ? <>Binary: {binaryFormatByParts(binary)}</> : <>Binary output...</>}
             </p>
             <p>
-              {hex !== "" ? <>Hexadecimal: {hex}</> : <>Hexadecimal output...</>}
+              {hex !== "" ? <>Hexadecimal: {hexFormatByParts(binary.split(" ").join(""))}</> : <>Hexadecimal output...</>}
             </p>
             {binary !== "" && hex !== "" && (
               <button
