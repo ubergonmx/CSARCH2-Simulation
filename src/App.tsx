@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import "./App.css";
-// import Header from "./Header";
+import Header from "./Header";
 // import Footer from "./Footer";
 import { getCombination, getExponent, getCoefficient, getHex } from "./Decimal64FtpConverter";
 import { roundDecimalOption } from "./RoundingCalculator";
@@ -231,7 +231,7 @@ function App(): JSX.Element {
 
   return (
     <div className="App">
-      {/* <Header /> */}
+      <Header />
       <section className="text-gray-400 bg-gray-900 body-font">
         <div className="container px-5 py-10 mx-auto">
           <div className="flex flex-col text-center items-center w-full mb-12">
