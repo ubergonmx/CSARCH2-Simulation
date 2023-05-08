@@ -5,13 +5,14 @@ DEC64. is a web application that converts IEEE-754 Decimal-64 floating-point to 
 ## Usage
 
 To use the DEC64 converter:
+
 1. Enter a decimal number in the Decimal input field. For example `4` in **4** x 10<sup>5</sup>
-![step1and2](./screenshots/1.png)
+   ![step1and2](./screenshots/1.png)
 2. Enter an exponent number in the Exponent input field. For example `5` in 4 x 10<sup>**5**</sup>
-![step3](./screenshots/2.png) 
+   ![step3](./screenshots/2.png)
 3. Optionally, you can select a special case and rounding off method from the listed options. By default, it is `No special case` and `Truncate` respectively.
 4. Click `Convert` to get the binary and hexadecimal output.
-![step5](./screenshots/3.png)
+   ![step5](./screenshots/3.png)
 5. You can hover the outputs to get more info, and you can optionally download the outputs as a text file.
 
 To see more inputs or sample cases, [click here](https://docs.google.com/spreadsheets/d/1vgMkI2yRnTjoUBvBne_0l-Z10zOhqDTlyu54O9-gDoM/edit?usp=sharing).
@@ -26,7 +27,9 @@ To install and run the project locally, follow these steps:
 4. Open the URL given in the console.
 
 ## Tools/Framework used
+
 The project was built using the following:
+
 - React: a JavaScript library for building user interfaces
 - Tailwind CSS: a utility-first CSS framework
 - Daisy UI: a Tailwind CSS component library
@@ -34,6 +37,7 @@ The project was built using the following:
 - Vite: a build tool and development server
 
 ## Team Members
+
 - Aaron Palpallatoc (Tech Lead)
 - Gelson Sze (Frontend developer)
 - Sean Umpad (QA)

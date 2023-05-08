@@ -1,5 +1,5 @@
 .App {
-  @apply h-screen grid;
+  @apply grid h-screen;
 }
 
 .logo {

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  @apply leading-normal font-normal text-[rgba(255,255,255,0.87)] bg-[#242424];
+  @apply bg-[#242424] font-normal leading-normal text-[rgba(255,255,255,0.87)];
   @apply font-sans;
   color-scheme: light dark;
   font-synthesis: none;
@@ -29,7 +29,7 @@ button:focus-visible {
 } */
 @media (prefers-color-scheme: light) {
   :root {
-    @apply text-[#213547] bg-white;
+    @apply bg-white text-[#213547];
   }
   a:hover {
     @apply text-[#747bff];

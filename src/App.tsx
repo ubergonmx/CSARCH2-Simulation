@@ -259,18 +259,16 @@ function App(): JSX.Element {
   }
 
   function separateStr(str : string, divider :string,  n:number) : string
-    {
-          var ret=[];
+  {
+        var ret=[];
 
-          for(let i=0; i<str.length; i=i+n) 
-          {
-                ret.push(str.substr(i, n))
-          };
+        for(let i=0; i<str.length; i=i+n) 
+        {
+              ret.push(str.substr(i, n))
+        };
 
-          return ret.join(divider);
-    };
-
-    separateStr('123456789', '.',  3);
+        return ret.join(divider);
+  };
 
   return (
     <div className="App">

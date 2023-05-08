@@ -11,7 +11,7 @@ export function getExponent(exponent: string): string {
 export function getCombination(msd: string, exponent: string): string {
   let combinationField = "";
   const solvedExponent = solveExponent(exponent); // solved exponent is the exponent added to 398 and is in 10 bit format
-  let msdBinary = parseInt(msd, 10).toString(2)
+  let msdBinary = parseInt(msd, 10).toString(2);
 
   if (msdBinary.length < 3) {
     while (msdBinary.length !== 3) {
@@ -44,13 +44,15 @@ export function getCoefficient(remainingDigits: string): string {
 }
 
 // gets the hexadecimal representation of the given binary string
-export function getHex(binary: string, getAll:boolean = false): string | string[] {
+export function getHex(binary: string, getAll: boolean = false): string | string[] {
   // split binary string into half
   const firstHalf = binary.substring(0, binary.length / 2);
-  let f = parseInt(firstHalf, 2).toString(16).toUpperCase(); while (f.length < 8) f = '0' + f
+  let f = parseInt(firstHalf, 2).toString(16).toUpperCase();
+  while (f.length < 8) f = "0" + f;
   const secondHalf = binary.substring(binary.length / 2);
-  let s = parseInt(secondHalf, 2).toString(16).toUpperCase(); while (s.length < 8) s = '0' + s
-  return (!getAll) ? f + s : [f + s, f, s, firstHalf, secondHalf];
+  let s = parseInt(secondHalf, 2).toString(16).toUpperCase();
+  while (s.length < 8) s = "0" + s;
+  return !getAll ? f + s : [f + s, f, s, firstHalf, secondHalf];
 }
 
 function solveExponent(exponent: string): string {
