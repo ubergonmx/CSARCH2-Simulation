@@ -253,10 +253,24 @@ function App(): JSX.Element {
 
   function hexFormatByParts(output: string) : JSX.Element {
     const [, fhh, shh, fhb, shb] = getHex(output, true);
-    const firstHalf = textToolTip(fhh, fhb);
-    const secondHalf = textToolTip(shh, shb); 
+    const firstHalf = textToolTip(fhh, separateStr(fhb, ' ', 4));
+    const secondHalf = textToolTip(shh, separateStr(shb, ' ', 4)); 
     return <div className="inline-flex flex-wrap px-2 py-1 rounded-lg text-xs font-medium leading-4 bg-gray-800 text-gray-300">{firstHalf}{secondHalf}</div>
   }
+
+  function separateStr(str : string, divider :string,  n:number) : string
+    {
+          var ret=[];
+
+          for(let i=0; i<str.length; i=i+n) 
+          {
+                ret.push(str.substr(i, n))
+          };
+
+          return ret.join(divider);
+    };
+
+    separateStr('123456789', '.',  3);
 
   return (
     <div className="App">

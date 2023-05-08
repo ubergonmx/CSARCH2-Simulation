@@ -29,3 +29,7 @@
     animation: logo-spin infinite 20s linear;
   }
 }
+
+.tooltip:before {
+  max-width: 25rem !important;
+}
