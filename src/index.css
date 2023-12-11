@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  @apply bg-[#242424] font-normal leading-normal text-[rgba(255,255,255,0.87)];
+  @apply bg-gray-900 font-normal leading-normal text-[rgba(255,255,255,0.87)];
   @apply font-sans;
   color-scheme: light dark;
   font-synthesis: none;
